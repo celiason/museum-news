@@ -59,7 +59,7 @@ def chunk_text(text, chunk_size=512, overlap=25):
 
 
 # Function that reads in PDFs and creats chunks of text
-def chunk_pdfs(file_path, chunk_size=2000, reader='pymupdf4llm'):
+def chunk_pdfs(file_path, chunk_size=2000, overlap=25, reader='pymupdf4llm'):
     with open(file_path, 'rb') as file:
         if reader == 'pymupdf4llm':
             text = pymupdf4llm.to_markdown(file, show_progress=False)
@@ -71,23 +71,25 @@ def chunk_pdfs(file_path, chunk_size=2000, reader='pymupdf4llm'):
                 page = pdf_reader.pages[page_num]
                 text = page.extract_text()
                 # Split text into chunks approximately the size of a page
-                chunks = chunk_text(text, chunk_size)
+                chunks = chunk_text(text, chunk_size, overlap=overlap)
                 chunks_info.extend(chunks)
     return chunks_info
 
 # Testing zone
-# chunks = chunk_pdfs(file_path='pdfs/25720.pdf', chunk_size=2000, reader='pymupdf4llm')
+# chunks = chunk_pdfs(file_path='pdfs/25720.pdf', chunk_size=512, reader='pymupdf4llm')
+# chunks
 
 # Loop through all PDF files and create chunks of text
 dir_path = './pdfs'
 unique_id = 1
-chunk_size = 2000
-min_chunk_size = 200
+chunk_size = 512 # optimum according to https://arxiv.org/pdf/2407.01219
+chunk_overlap = 25 # ~from https://arxiv.org/pdf/2407.01219 (they used 20)
+min_chunk_size = 50 # not sure needed?
 files_list = []
 for filename in tqdm(os.listdir(dir_path), desc="Processing PDF files"):
     if filename.endswith('.pdf'):
         file_path = os.path.join(dir_path, filename)
-        chunks_info = chunk_pdfs(file_path, chunk_size)
+        chunks_info = chunk_pdfs(file_path, chunk_size, chunk_overlap)
         for chunk in chunks_info:
             file_info = {
                 'id': unique_id,
@@ -101,9 +103,6 @@ for filename in tqdm(os.listdir(dir_path), desc="Processing PDF files"):
 # Embed chunks in vector space
 ST = SentenceTransformer('all-MiniLM-L6-v2')
 
-# Setup empty list to hold embedding values
-# embeddings = []
-
 # Setup dataframe with doc IDs, text, etc.
 train = pd.DataFrame.from_records(files_list, index='id')
 train['new_column'] = train.title + ' - ' + train.text_chunk.str.lower()
@@ -115,7 +114,7 @@ texts = list(train.new_column)
 output_list = []
 step = 50
 from tqdm import tqdm
-for i in tqdm(range(0, len(texts), step), desc="Processing slices"):
+for i in tqdm(range(0, len(texts), step), desc="Encoding slices"):
     current_slice = texts[i:i + step]
     output = ST.encode(current_slice)
     output_list.extend(output)
@@ -123,17 +122,10 @@ for i in tqdm(range(0, len(texts), step), desc="Processing slices"):
 # Convert to dataframe
 embeddings = pd.DataFrame(output_list)
 
-# Not sure we need this step?
-dataset_embeddings = torch.from_numpy(
-    embeddings.to_numpy()).to(
-    torch.float)
-
-# Embedding data frame
-# data_2 = pd.DataFrame(data=embeddings)
-
 # Merge with text chunk/doc metadata
 train_fin = pd.concat([train, embeddings], axis=1)
 train_fin.reset_index(inplace=True)
 
 # Output for modeling
 train_fin.to_csv("train.csv", index=False)
+

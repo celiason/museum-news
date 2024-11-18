@@ -73,7 +73,7 @@ def augment_prompt(prompt, top_k=10):
 # Create the chatbot
 ##################################################################
 
-# hf_key get from secrets
+hf_key = st.secrets(["hf_key"])
 
 def llm(prompt, context, model='mistral', top_k=3):
     """
@@ -82,9 +82,9 @@ def llm(prompt, context, model='mistral', top_k=3):
     """
     
     # if model == 'llama3':
-        # client = InferenceClient("meta-llama/Meta-Llama-3-8B-Instruct", api_key="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")
+        # client = InferenceClient("meta-llama/Meta-Llama-3-8B-Instruct", api_key=hf_key)
     if model == 'mistral':
-        client = InferenceClient("Qwen/Qwen2.5-1.5B", api_key="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")
+        client = InferenceClient("Qwen/Qwen2.5-1.5B", api_key=hf_key)
 
     # RAG step
     # prompt_aug = augment_prompt(prompt, top_k = top_k)
