@@ -1,0 +1,4 @@
+pdfs/*
+train.csv
+lang.ipynb
+secrets.yaml
