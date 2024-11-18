@@ -15,8 +15,15 @@ import pymupdf4llm
 # data_dict = process_dir(path=, maxchunk=, minchunk=)
 # embedding_dict_to_dataframe(data_dict)
 
+from langchain.text_splitter import CharacterTextSplitter
+
+text = """
+Character splitting is the most basic form of splitting up your text.
+It is the process of simply dividing your text into N-character sized chunks regardless of their content or form.
+"""
+
 # Function to chunk text
-def chunk_text(text, chunk_size):
+def chunk_text(text, chunk_size=512, overlap=25):
     """Splits the input text into chunks based on the specified chunk size.
 
     Args:
@@ -27,18 +34,28 @@ def chunk_text(text, chunk_size):
     - chunks (list): A list of chunks where each chunk is a string not
     exceeding the chunk size.
     """
-    chunks = []
-    words = text.split()
-    current_chunk = ''
-    for word in words:
-        if len(current_chunk) + len(word) + 1 <= chunk_size:
-            current_chunk += word + ' '
-        else:
+    
+    if overlap == 0:
+        chunks = []
+        words = text.split()
+        current_chunk = ''
+        for word in words:
+            if len(current_chunk) + len(word) + 1 <= chunk_size:
+                current_chunk += word + ' '
+            else:
+                chunks.append(current_chunk)
+                current_chunk = word + ' '
+        if current_chunk:
             chunks.append(current_chunk)
-            current_chunk = word + ' '
-    if current_chunk:
-        chunks.append(current_chunk)
+    
+    else:
+        text_splitter = CharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=overlap, separator=' ', strip_whitespace=False)
+        chunks = text_splitter.create_documents([text])
+        chunks = [x.page_content for x in chunks]
+
     return chunks
+
+# chunk_text(text, chunk_size=10, overlap=5)
 
 
 # Function that reads in PDFs and creats chunks of text
