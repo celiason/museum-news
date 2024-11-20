@@ -7,7 +7,8 @@ from huggingface_hub import InferenceClient
 import streamlit as st
 
 DATA_URL = "celiason1/museum"
-LLM_MODEL = "tiiuae/falcon-7b-instruct"
+# LLM_MODEL = "tiiuae/falcon-7b-instruct"
+LLM_MODEL = "meta-llama/Meta-Llama-3-8B-Instruct"
 
 # @st.cache_data()
 # def load_data():
@@ -146,7 +147,7 @@ def llm(prompt, context, model, api_key, top_k=10):
     """
 
     messages = [{"role": "user", "content": augmented_prompt}]
-    client = InferenceClient("meta-llama/Meta-Llama-3-8B-Instruct", api_key=api_key)
+    client = InferenceClient(LLM_MODEL, api_key=api_key)
     result = client.chat_completion(messages, max_tokens=500, stream=False)
     
     output = result.choices[0].message.content

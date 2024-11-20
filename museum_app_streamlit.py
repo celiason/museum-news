@@ -10,17 +10,16 @@ HF_KEY = st.secrets['HF_KEY']
 
 # Initiate
 st.set_page_config(
-    page_title="Voices from the Field", page_icon=":bird:")
+    page_title="Voices from the Field")
 
 # Load custom functions
 from src.llm import augment_prompt, llm
 
 # Add a sidebar
-with st.sidebar:
-    add_radio = st.radio(
-        "Choose a model",
-        ("RAG", "Base LLM"))
-    
+# with st.sidebar:
+#     add_radio = st.radio(
+#         "Choose a model",
+#         ("RAG", "Base LLM"))
 
 # Add logo
 st.logo("./assets/fm_logo.png", size="large")
@@ -42,7 +41,16 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("History of the Field Museum :bird:")
+st.title("Voices from the Field")
+
+st.markdown("""
+Welcome to Voices from the Field! This website contains an AI-enabled 
+chatbot that will respond to any question you may have about the Field
+Museum based on our historical documents and news letters from the early 
+20th century into the late 90s. Feel free to type your question in the box
+below!
+
+""")
 
 # Add image
 st.image("assets/field-museum-bw.png")
