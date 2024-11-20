@@ -1,4 +1,3 @@
 pdfs/*
 train.csv
-lang.ipynb
-secrets.yaml
+.streamlist/secrets.yaml
