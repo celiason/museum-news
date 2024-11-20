@@ -19,3 +19,10 @@ pymupdf worked SO WELL!!!!!
     it captures the columns (pymupdf4llm DOES NOT)
     it maintains spaces between words (pypdf2 DOES NOT)
 
+
+
+TODO
+
+- get metadata from the files (year, title, etc.)
+- might be able to just do a REGEX.. ? first line, etc.
+
