@@ -23,6 +23,7 @@ def get_embeddings(data):
 
 # Load the data
 data = load_data()
+data = data.loc[data['0'].notna()]
 
 embeddings = get_embeddings(data)
 
@@ -32,10 +33,15 @@ embeddings = get_embeddings(data)
 #     print("NaN values found in embeddings at indices:", np.where(nan_indices)[0])
 # len(embeddings[nan_indices])
 
+# prompt = "birds in the museum"
+# semantic_search(query_embeddings, embeddings, top_k=3)
+
+# print(data.loc[34920, 'new_column'].replace('[', ''))
+
 # Generating augmented prompts
 def augment_prompt(prompt, top_k=10):
     """
-    prompt = 'Insects'
+    prompt = 'tell me about okapis at the museum'
 
     """
     
@@ -43,20 +49,29 @@ def augment_prompt(prompt, top_k=10):
     from sentence_transformers.util import semantic_search
     
     ST = SentenceTransformer('all-MiniLM-L6-v2')
+    # ST = SentenceTransformer('BAAI/bge-small-en-v1.5')
+    # ST = SentenceTransformer('Alibaba-NLP/gte-base-en-v1.5', trust_remote_code=True)
     query_embeddings = ST.encode(prompt)
 
     # Search the query against the augmented database
-    
+
+# top_k=10
+# prompt="what about the gorillas exhibit?"
+
     hits = semantic_search(
         query_embeddings,
         embeddings,
         top_k=top_k)
 
     selected_rows = [hits[0][i]['corpus_id'] for i in range(len(hits[0]))]
-
+    
     # Get context
-    context = data.loc[selected_rows]['new_column'].values.tolist()
+    context = data.loc[selected_rows, 'new_column'].values.tolist()
     context = "\n\n".join([x for x in context])
+
+# import textwrap
+# print(textwrap.fill(context))
+# print(context)
 
     documents = data.loc[selected_rows,'title'].values.tolist()
     docs = list(set([x.replace(".pdf", "") for x in documents]))
@@ -73,7 +88,16 @@ def augment_prompt(prompt, top_k=10):
 # Create the chatbot
 ##################################################################
 
-hf_key = st.secrets(["hf_key"])
+llm_model = "tiiuae/falcon-7b-instruct"
+
+with st.sidebar:
+    # with st.echo():
+    st.write("LLM model: `", llm_model, "`")
+
+
+# st.sidebar(llm_model)
+
+hf_key = st.secrets["hf_key"]
 
 def llm(prompt, context, model='mistral', top_k=3):
     """
@@ -84,7 +108,8 @@ def llm(prompt, context, model='mistral', top_k=3):
     # if model == 'llama3':
         # client = InferenceClient("meta-llama/Meta-Llama-3-8B-Instruct", api_key=hf_key)
     if model == 'mistral':
-        client = InferenceClient("Qwen/Qwen2.5-1.5B", api_key=hf_key)
+        # client = InferenceClient("Qwen/Qwen2.5-1.5B", api_key=hf_key)
+        client = InferenceClient(llm_model, api_key=hf_key)
 
     # RAG step
     # prompt_aug = augment_prompt(prompt, top_k = top_k)

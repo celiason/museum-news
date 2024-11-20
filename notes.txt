@@ -1,0 +1,21 @@
+stream
+notes
+
+
+i'm having trouble getting relevant texts
+
+i ask about gorillas and none of the semantic search matches are about gorillas.
+ha
+
+trying smaller chunk size
+
+the text matching is not doing well AT ALL
+
+there aren't spaces between words with pypdf2
+..pymupdf2 for llm looks better, but when i took a closer look i see that the multicolumns are not found and all the text runs together in a horizontal line (so it makes zero sense.)
+
+FUCK YES!!!
+pymupdf worked SO WELL!!!!!
+    it captures the columns (pymupdf4llm DOES NOT)
+    it maintains spaces between words (pypdf2 DOES NOT)
+
