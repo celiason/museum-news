@@ -1,16 +1,12 @@
-# app idea
-
-# todo
-
-
 # 1. download PDFs for Field museum news from biodiversity heritage library
-
-'Field Museum news'
-'Chicago Natural History Museum Bulletin'
 
 import requests
 import xml.etree.ElementTree as ET
 import urllib
+
+import streamlit as st
+
+BHL_KEY = st.secrets['BHL_KEY']
 
 def get_urls(title: str, year: int):
     """
@@ -23,7 +19,7 @@ def get_urls(title: str, year: int):
 
     # Make title URL-friendly
     title = urllib.parse.quote(title.lower())
-    url = 'https://www.biodiversitylibrary.org/api3?op=PublicationSearchAdvanced&title=' + title + '&year=' + year + '&format=xml&apikey=' + apikey
+    url = 'https://www.biodiversitylibrary.org/api3?op=PublicationSearchAdvanced&title=' + title + '&year=' + year + '&format=xml&apikey=' + BHL_KEY
 
     # Get XML for search item
     page = requests.get(url)
@@ -35,7 +31,7 @@ def get_urls(title: str, year: int):
         item_id = root.find('Result/Publication/ItemID').text
         
         # Create a new call to get item metadata (i.e. PDF url is what we're after)
-        url = 'https://www.biodiversitylibrary.org/api3?op=GetItemMetadata&id=' + item_id + '&apikey=' + apikey
+        url = 'https://www.biodiversitylibrary.org/api3?op=GetItemMetadata&id=' + item_id + '&apikey=' + BHL_KEY
     
         page = requests.get(url)
         root = ET.fromstring(page.content)
