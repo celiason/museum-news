@@ -92,12 +92,17 @@ def chunk_pdfs(file_path, chunk_size=2000, chunk_overlap=20, reader='pymupdf4llm
 
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
+
 def text_to_image(text, font_path="Arial", wrap=80, font_size=20, color=(0, 0, 0), bg=(255, 255, 255)):
     """Converts a chunk of text to an image."""
 
-    wrapper = textwrap.TextWrapper(width=wrap)
-    text_lines = wrapper.wrap(text=text)
+    text = text.replace('\n', '')
     
+    wrapper = textwrap.TextWrapper(width=wrap)
+    
+    # filled_text = wrapper.fill(text=text)
+    text_lines = wrapper.wrap(text=text)
+
     font = ImageFont.truetype(font_path, font_size)
     
     line_sizes = np.array([font.getbbox(x) for x in text_lines])
@@ -112,18 +117,17 @@ def text_to_image(text, font_path="Arial", wrap=80, font_size=20, color=(0, 0, 0
 
     return img
 
-
-
 text_method1 = pymupdf4llm.to_markdown('pdfs/25720.pdf', pages=[0])
-img1 = text_to_image(text_method1[0:800], font_size=20, wrap=80)
+print(textwrap.fill(text_method1))
+img1 = text_to_image(text_method1[0:800], font_size=14, wrap=40)
 img1.save("text_pymupdf4llm.png")
 
 text_method2 = pymupdf.open('pdfs/25720.pdf')[0].get_text()
-img2 = text_to_image(text_method2[0:800], font_size=20, wrap=80)
+img2 = text_to_image(text_method2[0:800], font_size=14, wrap=40)
 img2.save("text_pymupdf.png")
                 
 text_method3 = PyPDF2.PdfReader('pdfs/25720.pdf').pages[0].extract_text()
-img3 = text_to_image(text_method3[0:800], font_size=20, wrap=80)
+img3 = text_to_image(text_method3[0:800], font_size=14, wrap=40)
 img3.save("text_pypdf2.png")
 
 
