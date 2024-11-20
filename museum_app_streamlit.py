@@ -15,12 +15,6 @@ st.set_page_config(
 # Load custom functions
 from src.llm import augment_prompt, llm
 
-# Add a sidebar
-# with st.sidebar:
-#     add_radio = st.radio(
-#         "Choose a model",
-#         ("RAG", "Base LLM"))
-
 # Add logo
 st.logo("./assets/fm_logo.png", size="large")
 
