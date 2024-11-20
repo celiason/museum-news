@@ -9,8 +9,7 @@ from streamlit_extras.app_logo import add_logo
 HF_KEY = st.secrets['HF_KEY']
 
 # Initiate
-st.set_page_config(
-    page_title="Voices from the Field")
+st.set_page_config(page_title="Voices from the Field")
 
 # Load custom functions
 from src.llm import augment_prompt, llm
@@ -19,21 +18,21 @@ from src.llm import augment_prompt, llm
 st.logo("./assets/fm_logo.png", size="large")
 
 # Formatting?
-st.markdown("""
-<style>
-    .st-emotion-cache-1rtdyuf {
-        color: #FFFFFF;
-    }
+# st.markdown("""
+# <style>
+#     .st-emotion-cache-1rtdyuf {
+#         color: #FFFFFF;
+#     }
 
-    .st-emotion-cache-1egp75f {
-        color: #FFFFFF;
-    }
+#     .st-emotion-cache-1egp75f {
+#         color: #FFFFFF;
+#     }
 
-    .st-emotion-cache-1rtdyuf {
-        color: #FFFFFF;
-    }
-</style>
-""", unsafe_allow_html=True)
+#     .st-emotion-cache-1rtdyuf {
+#         color: #FFFFFF;
+#     }
+# </style>
+# """, unsafe_allow_html=True)
 
 st.title("Voices from the Field")
 
@@ -61,7 +60,6 @@ for message in st.session_state.messages_museum:
         st.caption(message["documents"])
 
 # Ask for user input
-# prompt="Tell me about gorillas"
 if prompt := st.chat_input("Ask me a question"):
     
     # Add user input to chat history
@@ -90,6 +88,7 @@ if prompt := st.chat_input("Ask me a question"):
         for chunk in llm_output.split():
             full_response += chunk + " "
             time.sleep(0.05)
+            
             # Add a blinking cursor to simulate typing
             message_placeholder.markdown(full_response + "▌")
         

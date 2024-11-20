@@ -10,12 +10,6 @@ DATA_URL = "celiason1/museum"
 # LLM_MODEL = "tiiuae/falcon-7b-instruct"
 LLM_MODEL = "meta-llama/Meta-Llama-3-8B-Instruct"
 
-# @st.cache_data()
-# def load_data():
-#     dataset = load_dataset("csv", data_files="train.csv")
-#     data = dataset['train'].to_pandas()
-#     return data
-
 @staticmethod
 @st.cache_data(show_spinner=False)
 def load_data(data_source):
