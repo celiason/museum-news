@@ -1,8 +1,6 @@
 # Voices from the Field
 
-<!-- ![](field-museum-bw.png) -->
-
-![](cassowary_clip.png)
+![](field-museum-bw.png)
 
 ## Introduction
 
@@ -20,7 +18,7 @@ I’d love for you to give it a try—and who knows? Maybe I’ll see you at the
 
 The documents were easily accessible from the [Biodiversity Heritage Library](https://www.biodiversitylibrary.org). Here is a sample page from a news publication from January, 1935:
 
-<!-- ![](cassowary_clip.png) -->
+![](cassowary_clip.png)
 
 ## Problems (and solutions) with ingesting text
 
