@@ -66,7 +66,9 @@ I consider several possible LLMs (GPT-4o, GPT-4o mini, Llama 3, Claude 3.5). Sin
 
 ## Try it out!
 
-The website is now live as a streamlit app! Feel free to try it out at the following url: [URL pending...]()
+The website is now live as a streamlit app! Feel free to try it out [here](https://bgc4hrzhx3cht28dzhpgaz.streamlit.app)!
+
+
 
 ## Future steps
 
