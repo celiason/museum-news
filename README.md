@@ -64,7 +64,7 @@ I tried several embedding models available on HuggingFace and implemented in the
 
 ## Connecting a LLM
 
-I looked at several possible LLMs (gpt-3.5, xx). Since I wanted to make this free for people to use, so I steered away from OpenAI's API and instead landed on the Falcon-7B-Instruct model ([https://huggingface.co/tiiuae/falcon-7b-instruct](https://huggingface.co/tiiuae/falcon-7b-instruct)). This model was good for chat-based applications, was trained on a relatively large data set() and had good performance according to the XX metrics on HG ().
+I consider several possible LLMs (GPT-4o, GPT-4o mini, Llama 3, Claude 3.5). Since I wanted to make this free for people to use, I steered away from commercial APIs and instead focused on free LLMs available on huggingface. I landed on the Falcon-7B-Instruct model ([https://huggingface.co/tiiuae/falcon-7b-instruct](https://huggingface.co/tiiuae/falcon-7b-instruct)). This model was good for chat-based applications, was trained on a relatively large data set() and had good performance according to HF leaderboards.
 
 ## Adding vertnet
 
