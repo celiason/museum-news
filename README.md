@@ -1,6 +1,6 @@
 # Voices from the Field
 
-![](field-museum-bw.png)
+![](assets/field-museum-bw.png)
 
 ## Introduction
 
@@ -18,13 +18,13 @@ I’d love for you to give it a try—and who knows? Maybe I’ll see you at the
 
 The documents were easily accessible from the [Biodiversity Heritage Library](https://www.biodiversitylibrary.org). Here is a sample page from a news publication from January, 1935:
 
-![](cassowary_clip.png)
+![](assets/cassowary_clip.png)
 
 ## Problems (and solutions) with ingesting text
 
 The problem with old PDF files is that they often were formatted in ways we don't use today, and sometimes the text is not searchable. I tried several ways of extracting text from PDFs.
 
-<!-- ### Trying `pypdf2` -->
+### Take 1
 
 First, I used the popular `pypdf2` package in Python. This was really fast, but the problem was that the text often ran together. Here's an example:
 
@@ -32,17 +32,17 @@ First, I used the popular `pypdf2` package in Python. This was really fast, but 
 
 <!-- <code style="color: darkorange">text</code> -->
 
-<!-- ### Trying `pymupdf4llm` -->
+### Take 2
 
 Next up, I tried the `pymupdf4llm` package, which was designed with extracting text from PDFs specifically for use in large language models (LLM), like the chat bot I was designing. Unfortunately, the problem I ran into was that- in many of the PDF files there were multiple columns, and instead of ingesting the text in the correct reading order, the algorithm would read horizontally across a page. Needless to say, this often caused confusion. Here is an example of what I mean (notice the bolded text):
 
 > NEW TAXIDERMY METHOD APPLIED TO CASSOWARY PRESERVES LIFE COLORS\n         By Karl P. Schmidt __River, was skinned and preserved. The__ Museum\'s taxidermy staff, into an exhibit...
 
-<!-- ![](text_pymupdf4llm.png) -->
+<!-- ![](figs/text_pymupdf4llm.png) -->
 
 At first I thought, this will be fine, the LLM will figure out what I mean and correctly interpret the texts. But I was wrong. Even AI needs a little help from humans!
 
-<!-- ### Trying `pymupdf` -->
+### Take 3
 
 Finally, I tried an alternative, `pymupdf`. To my surprise, it worked really well. There wasn't the problem of missing spaces between words that `pypdf2` had, and the columns were correctly traversed, unlike the specialized `pymupdf4lmm` package. Here is an example of some extracted text:
 
