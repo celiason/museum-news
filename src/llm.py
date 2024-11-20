@@ -6,11 +6,28 @@ from sentence_transformers import SentenceTransformer
 from huggingface_hub import InferenceClient
 import streamlit as st
 
-@st.cache_data()
-def load_data():
-    dataset = load_dataset("csv", data_files="train.csv")
-    data = dataset['train'].to_pandas()
-    return data
+DATA_URL = "celiason1/museum"
+LLM_MODEL = "tiiuae/falcon-7b-instruct"
+
+# @st.cache_data()
+# def load_data():
+#     dataset = load_dataset("csv", data_files="train.csv")
+#     data = dataset['train'].to_pandas()
+#     return data
+
+@staticmethod
+@st.cache_data(show_spinner=False)
+def load_data(data_source):
+    """Loads and returns a dataset from a specified data URL using
+    Hugging Face's datasets library.
+
+    Returns:
+    - dataset: a Pandas DataFrame containing the loaded dataset
+    """
+    dataset = load_dataset(
+        DATA_URL, download_mode='force_redownload',
+        verification_mode='no_checks')['train'].to_pandas()
+    return dataset
 
 @staticmethod
 @st.cache_data()
@@ -22,9 +39,10 @@ def get_embeddings(data):
     return res
 
 # Load the data
-data = load_data()
+data = load_data(DATA_URL)
 data = data.loc[data['0'].notna()]
 
+# Get just the embeddings
 embeddings = get_embeddings(data)
 
 # Check for NaN values in the embeddings
@@ -88,18 +106,16 @@ def augment_prompt(prompt, top_k=10):
 # Create the chatbot
 ##################################################################
 
-llm_model = "tiiuae/falcon-7b-instruct"
-
 with st.sidebar:
     # with st.echo():
-    st.write("LLM model: `", llm_model, "`")
+    st.write("LLM model: `", LLM_MODEL, "`")
 
 
-# st.sidebar(llm_model)
+# st.sidebar(LLM_MODEL)
 
-hf_key = st.secrets["hf_key"]
+# hf_key = st.secrets["hf_key"]
 
-def llm(prompt, context, model='mistral', top_k=3):
+def llm(prompt, context, model, api_key, top_k=10):
     """
     Sample prompt: "Tell me about gorillas at the field museum."
     outputs chatbot response
@@ -109,7 +125,7 @@ def llm(prompt, context, model='mistral', top_k=3):
         # client = InferenceClient("meta-llama/Meta-Llama-3-8B-Instruct", api_key=hf_key)
     if model == 'mistral':
         # client = InferenceClient("Qwen/Qwen2.5-1.5B", api_key=hf_key)
-        client = InferenceClient(llm_model, api_key=hf_key)
+        client = InferenceClient(LLM_MODEL, api_key=api_key)
 
     # RAG step
     # prompt_aug = augment_prompt(prompt, top_k = top_k)
@@ -130,7 +146,7 @@ def llm(prompt, context, model='mistral', top_k=3):
     """
 
     messages = [{"role": "user", "content": augmented_prompt}]
-    client = InferenceClient("meta-llama/Meta-Llama-3-8B-Instruct", api_key=hf_key)
+    client = InferenceClient("meta-llama/Meta-Llama-3-8B-Instruct", api_key=api_key)
     result = client.chat_completion(messages, max_tokens=500, stream=False)
     
     output = result.choices[0].message.content

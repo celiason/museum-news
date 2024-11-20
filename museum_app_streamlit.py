@@ -5,9 +5,12 @@ import numpy as np
 import torch
 from streamlit_extras.app_logo import add_logo
 
+# Setup credentials
+HF_KEY = st.secrets['HF_KEY']
+
 # Initiate
 st.set_page_config(
-    page_title="Ask the Field Museum", page_icon=":bird:")
+    page_title="Voices from the Field", page_icon=":bird:")
 
 # Load custom functions
 from src.llm import augment_prompt, llm
@@ -20,7 +23,7 @@ with st.sidebar:
     
 
 # Add logo
-st.logo("./unnamed.png", size="large")
+st.logo("./assets/fm_logo.png", size="large")
 
 # Formatting?
 st.markdown("""
@@ -42,7 +45,7 @@ st.markdown("""
 st.title("History of the Field Museum :bird:")
 
 # Add image
-st.image("field-museum-chicago-illinois-nby-414913-4e75aa-640.jpg")
+st.image("assets/field-museum-bw.png")
 
 
 # Initialize chat history
@@ -76,7 +79,7 @@ if prompt := st.chat_input("Ask me a question"):
             documents = rag[1]
 
             # Feed prompt and context into the LLM model
-            llm_output = llm(prompt=prompt, context=context, model='llama3')
+            llm_output = llm(prompt=prompt, context=context, model='llama3', api_key=HF_KEY)
 
         # if llm.stop == 1:
         #     st.stop()
