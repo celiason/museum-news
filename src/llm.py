@@ -10,6 +10,8 @@ DATA_URL = "celiason1/museum"
 # LLM_MODEL = "tiiuae/falcon-7b-instruct"
 LLM_MODEL = "meta-llama/Meta-Llama-3-8B-Instruct"
 
+# TODO make this model selectable below
+
 @staticmethod
 @st.cache_data(show_spinner=False)
 def load_data(data_source):
@@ -40,17 +42,6 @@ data = data.loc[data['0'].notna()]
 # Get just the embeddings
 embeddings = get_embeddings(data)
 
-# Check for NaN values in the embeddings
-# nan_indices = ~np.isnan(embeddings.numpy()).any(axis=1)
-# if np.any(nan_indices):
-#     print("NaN values found in embeddings at indices:", np.where(nan_indices)[0])
-# len(embeddings[nan_indices])
-
-# prompt = "birds in the museum"
-# semantic_search(query_embeddings, embeddings, top_k=3)
-
-# print(data.loc[34920, 'new_column'].replace('[', ''))
-
 # Generating augmented prompts
 def augment_prompt(prompt, top_k=10):
     """
@@ -67,60 +58,35 @@ def augment_prompt(prompt, top_k=10):
     query_embeddings = ST.encode(prompt)
 
     # Search the query against the augmented database
-
-# top_k=10
-# prompt="what about the gorillas exhibit?"
-
     hits = semantic_search(
         query_embeddings,
         embeddings,
         top_k=top_k)
 
+    # Pull out text of interest based on hits
     selected_rows = [hits[0][i]['corpus_id'] for i in range(len(hits[0]))]
     
-    # Get context
+    # Set text as the context for the LLM
     context = data.loc[selected_rows, 'new_column'].values.tolist()
     context = "\n\n".join([x for x in context])
 
-# import textwrap
-# print(textwrap.fill(context))
-# print(context)
-
+    # Find the PDF docs that correspond to the retrieved information
     documents = data.loc[selected_rows,'title'].values.tolist()
     docs = list(set([x.replace(".pdf", "") for x in documents]))
     docs = "\n".join([f"• {item}" for item in docs])
     
     return context, docs
 
-# import textwrap
-# print(textwrap.fill(context,80))
-# testing zone
-# print(augment_prompt("gorillas", top_k=3)[1])
-
-##################################################################
-# Create the chatbot
-##################################################################
-
+# Show the LLM name in the sidebar
 with st.sidebar:
-    # with st.echo():
     st.write("LLM model: `", LLM_MODEL, "`")
 
-
-# st.sidebar(LLM_MODEL)
-
-# hf_key = st.secrets["hf_key"]
-
+# Setup the LLM chatbot
 def llm(prompt, context, model, api_key, top_k=10):
     """
     Sample prompt: "Tell me about gorillas at the field museum."
     outputs chatbot response
     """
-    
-    # if model == 'llama3':
-        # client = InferenceClient("meta-llama/Meta-Llama-3-8B-Instruct", api_key=hf_key)
-    if model == 'mistral':
-        # client = InferenceClient("Qwen/Qwen2.5-1.5B", api_key=hf_key)
-        client = InferenceClient(LLM_MODEL, api_key=api_key)
 
     # RAG step
     # prompt_aug = augment_prompt(prompt, top_k = top_k)
@@ -147,14 +113,3 @@ def llm(prompt, context, model, api_key, top_k=10):
     output = result.choices[0].message.content
     
     return output
-    # Access different components of the response
-    # import textwrap
-    # print(textwrap.fill(result.choices[0].message.content, width=70))
-    # print(textwrap.fill(context[0]))
-
-# Testing
-# aug_prompt = augment_prompt("Tell me about gorillas")
-# context = aug_prompt[0]
-# documents = aug_prompt[1]
-# llm(prompt="Tell me about gorillas", context=context)
-
