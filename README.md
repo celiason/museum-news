@@ -62,15 +62,16 @@ I tried several embedding models available on HuggingFace and implemented in the
 
 ## Connecting a LLM
 
-I consider several possible LLMs (GPT-4o, GPT-4o mini, Llama 3, Claude 3.5). Since I wanted to make this free for people to use, I steered away from commercial APIs and instead focused on free LLMs available on huggingface. I landed on the Falcon-7B-Instruct model ([https://huggingface.co/tiiuae/falcon-7b-instruct](https://huggingface.co/tiiuae/falcon-7b-instruct)). This model was good for chat-based applications, was trained on a relatively large data set() and had good performance according to HF leaderboards.
+I consider several possible LLMs (GPT-4o, GPT-4o mini, Llama 3, Claude 3.5). Since I wanted to make this free for people to use, I steered away from commercial APIs and instead focused on free LLMs available on huggingface. I landed on the Falcon-7B-Instruct model ([https://huggingface.co/tiiuae/falcon-7b-instruct](https://huggingface.co/tiiuae/falcon-7b-instruct)). This model was good for chat-based applications, was trained on a relatively large data set and had good performance according to HF leaderboards.
 
-## Adding vertnet
+## Try it out!
 
-We might be interested in .. how many birds are there?
+The website is now live as a streamlit app! Feel free to try it out at the following url: [URL pending...]()
 
-or what is the first bird ever collected?
+## Future steps
 
-who collected?
+1. __Connect a specimen database__: We might be interested in .. how many birds are there? What is the first bird ever collected? Who collected the most specimens? What famous collectors were working in the 1920s?
 
-what famous collectors were working in the 1920s?
+2. __Compare chunking methods, LLMs__: Other models might perform better
 
+3. __Add metadata__: Right now, the LLM has trouble understanding context about the documents. For example, what year/month they came from. I am thinking of trying regular expressions (or pulling metadata from BHL).
