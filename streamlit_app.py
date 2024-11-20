@@ -37,11 +37,10 @@ st.logo("./assets/fm_logo.png", size="large")
 st.title("Voices from the Field")
 
 st.markdown("""
-Welcome to Voices from the Field! This website contains an AI-enabled 
-chatbot that will respond to any question you may have about the Field
-Museum based on our historical documents and news letters from the early 
-20th century into the late 90s. Feel free to type your question in the box
-below!
+Welcome to Voices from the Field! I am an AI-enabled 
+assistant that will respond to any question you may have about the Field
+Museum! I have access to piles of historical documents and newsletters from the early 
+20th century to the late 90s. Feel free to type your question in the box below!
 
 """)
 
